@@ -6,10 +6,15 @@ Resource    ./base.robot
 
 *** Keywords ***
 Get DUT WAN IP
+    [Documentation]    Top-level keyword preserved for compatibility.
+    ...                It uses 'Wait Until Keyword Succeeds' to call 'retry Get DUT WAN IP'.
+    ...                'retry Get DUT WAN IP' now internally delegates to 'Retry Get DUT WAN IP Via GUI' in kw_gui_setup.robot.
     Wait Until Keyword Succeeds    4x    4s    retry Get DUT WAN IP
 
-
 retry Get DUT WAN IP
+    [Documentation]    Backward compatible wrapper calling new GUI composite keyword.
+    ...                Expanded flow encapsulated in: Retry Get DUT WAN IP Via GUI.
+    ...                Intended usage (unchanged): use with Wait Until Keyword Succeeds from callers.
     Login GUI    ${URL}    ${DUT_Password}
     sleep    4
     ${result}=    Get Text    id=dashboard_internet_address
@@ -237,14 +242,12 @@ Change DUT LAN IP to Default from GUI
     ${ping_result}=    Run    ping 192.168.1.1 -c 4
     Should Contain    ${ping_result}    ttl=
 
-
 Open LAN Page
     click element    id=lang_mainmenu_basic_setting
     sleep    2
     click element    id=menu_basic_setting_lan
     sleep    2
     wait_until_element_is_visible    id=ip    timeout=10
-
 
 
 Change DUT LAN IP adddress and subnet mask config 192.168.0.1/255.255.0.0
@@ -469,7 +472,6 @@ Reset settings FN23LN005
     sleep    5
     Run    sudo ifconfig eth3 192.168.1.51 netmask 255.255.255.0
     Close Browser
-
 
 
 Reset settings 2
