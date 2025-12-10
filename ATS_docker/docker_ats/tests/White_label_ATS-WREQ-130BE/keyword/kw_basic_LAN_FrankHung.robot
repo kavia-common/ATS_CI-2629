@@ -1,5 +1,5 @@
 *** Settings ***
-#Resource    ./base.robot
+Resource    ./base.robot
 
 *** Variables ***
 
@@ -761,74 +761,6 @@ Open status page
     click element    id=lang_mainmenu_status
     sleep    2
     wait_until_element_is_visible    id=ipv4type1    timeout=5
-
-Login GUI
-    [Tags]   @AUTHOR=Frank_Hung
-    [Arguments]    ${URL}    ${DUT_Password}
-    Wait Until Keyword Succeeds    4x    60s    Retry Login GUI    ${URL}    ${DUT_Password}
-    [Teardown]    Stop Test Fail Retry Login Fail
-
-
-
-Stop Test Fail Retry Login Fail
-    ${gui_type}     run keyword and return status    wait_until_element_is_visible    id=homepage_tile    timeout=5
-    Run Keyword if    ${gui_type}!=True    Fatal Error
-
-Retry Login GUI
-    [Tags]   @AUTHOR=Frank_Hung
-    [Arguments]    ${URL}    ${DUT_Password}
-    run keyword and ignore error    Close Browser
-    sleep    2
-    Open Web GUI    ${URL}
-#------Login GUI if detect login button
-    sleep    5
-    wait_until_element_is_visible    id=acnt_passwd    timeout=90
-    input_text    id=acnt_username    admin
-    sleep    1
-    input_text    id=acnt_passwd    ${DUT_Password}
-    sleep    1
-    click element    id=myButton
-    sleep    5
-    Wait until element is visible    id=lang_mainmenu_basic_setting    timeout=30
-    sleep    3
-    Wait Until Element Is Not Visible    id=ajaxLoaderIcon    timeout=120
-    sleep    2
-
-Open Web GUI
-    [Tags]   @AUTHOR=Frank_Hung
-    [Arguments]    ${URL}
-    run keyword and ignore error    delete all cookies
-    #=========================================check Network
-    ${result}=    Run    ifconfig
-    log    ${result}
-    ${result}=    Run    ping 192.168.1.1 -c 4
-    log    ${result}
-    #=========================================
-    open browser    ${URL}    Firefox
-    #Print Console Log If Open Browser Fail=======================================================================
-#    ${gui_type}     run keyword and return status    open browser    ${URL}    Firefox
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    \n    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    ping 168.95.1.1 -c 4   prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    cat /proc/uptime    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    ps -w    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    ifconfig    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    nft -a list table inet fw4    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    netstat -tulpn | grep :80    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    dmesg    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    Fail    Login Fail
-    #=======================================================================
-    sleep    3
-    Maximize Browser Window
-    sleep    3
-
 
 Open White label Web GUI
     [Tags]   @AUTHOR=Frank_Hung

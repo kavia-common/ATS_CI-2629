@@ -1,5 +1,5 @@
 *** Settings ***
-#Resource    ./base.robot
+Resource    ./base.robot
 
 *** Variables ***
 
@@ -1323,40 +1323,7 @@ Waiting 10 seconds for log to Console
     sleep    10
     log to console    sleeping 10 seeconds
 
-Open Web GUI
-    [Tags]   @AUTHOR=Frank_Hung
-    [Arguments]    ${URL}
-    run keyword and ignore error    delete all cookies
-    #=========================================check Network
-    ${result}=    Run    ifconfig
-    log    ${result}
-    ${result}=    Run    ping 192.168.1.1 -c 4
-    log    ${result}
-    #=========================================
-    open browser    ${URL}    Firefox
-    #Print Console Log If Open Browser Fail=======================================================================
-#    ${gui_type}     run keyword and return status    open browser    ${URL}    Firefox
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    \n    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    ping 168.95.1.1 -c 4   prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    cat /proc/uptime    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    ps -w    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    ifconfig    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    nft -a list table inet fw4    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    netstat -tulpn | grep :80    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    cli    DUT_serial_port    dmesg    prompt=root@
-#    Run Keyword if    ${gui_type}!=True    sleep    2
-#    Run Keyword if    ${gui_type}!=True    Fail    Login Fail
-    #=======================================================================
-    sleep    3
-    Maximize Browser Window
-    sleep    3
+# (Open Web GUI provided by keyword/kw_gui_setup.robot)
 
 LAN PC Renew IP
     Wait Until Keyword Succeeds    3x    2s    cli    lanhost    echo '${DEVICES.lanhost.password}' | sudo -S route del default    prompt=vagrant@lanhost
@@ -1675,43 +1642,7 @@ Verify LAN PC can access Internet
     ${result}=     cli   lanhost    wget https://www.google.com    prompt=vagrant@lanhost    timeout=60
     Should Contain    ${result}    response... 200 OK
 
-Login GUI
-    [Tags]   @AUTHOR=Frank_Hung
-    [Arguments]    ${URL}    ${DUT_Password}
-    Wait Until Keyword Succeeds    4x    60s    Retry Login GUI    ${URL}    ${DUT_Password}
-    [Teardown]    Stop Test Fail Retry Login Fail
-
-Stop Test Fail Retry Login Fail
-    ${gui_type}     run keyword and return status    wait_until_element_is_visible    id=lang_mainmenu_basic_setting    timeout=5
-    Run Keyword if    ${gui_type}!=True    Fatal Error
-
-#Stop Test Fail Retry Login Fail
-#    ${gui_type}     run keyword and return status    wait_until_element_is_visible    id=lang_dev_info_name_title    timeout=5
-#    Run Keyword if    ${gui_type}!=True    Power Off than Power On DUT when login Fail
-
-Power Off than Power On DUT when login Fail
-    Run    python /home/vagrant/apc_script_power_off_to_on.py
-    sleep    120
-
-Retry Login GUI
-    [Tags]   @AUTHOR=Frank_Hung
-    [Arguments]    ${URL}    ${DUT_Password}
-    run keyword and ignore error    Close Browser
-    sleep    2
-    Open Web GUI    ${URL}
-#------Login GUI if detect login button
-    sleep    5
-    wait_until_element_is_visible    id=acnt_passwd    timeout=90
-    input_text    id=acnt_username    admin
-    sleep    1
-    input_text    id=acnt_passwd    ${DUT_Password}
-    sleep    1
-    click element    id=myButton
-    sleep    5
-    Wait until element is visible    id=lang_mainmenu_basic_setting    timeout=30
-    sleep    3
-    Wait Until Element Is Not Visible    id=ajaxLoaderIcon    timeout=120
-    sleep    2
+# (GUI helpers centralized in keyword/kw_gui_setup.robot)
 
 Login and Reset Default DUT
     [Arguments]    ${URL}    ${DUT_Password}
