@@ -6,15 +6,9 @@ Resource    ./base.robot
 
 *** Keywords ***
 Get DUT WAN IP
-    [Documentation]    Top-level keyword preserved for compatibility.
-    ...                It uses 'Wait Until Keyword Succeeds' to call 'retry Get DUT WAN IP'.
-    ...                'retry Get DUT WAN IP' now internally delegates to 'Retry Get DUT WAN IP Via GUI' in kw_gui_setup.robot.
     Wait Until Keyword Succeeds    4x    4s    retry Get DUT WAN IP
 
 retry Get DUT WAN IP
-    [Documentation]    Backward compatible wrapper calling new GUI composite keyword.
-    ...                Expanded flow encapsulated in: Retry Get DUT WAN IP Via GUI.
-    ...                Intended usage (unchanged): use with Wait Until Keyword Succeeds from callers.
     Login GUI    ${URL}    ${DUT_Password}
     sleep    4
     ${result}=    Get Text    id=dashboard_internet_address
